@@ -9,3 +9,24 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model Todo {
+  id              String      @id @unique @default(cuid())
+  todo_title      String?
+  todo_categories Categories? @relation(fields: [categoriesId], references: [id])
+  updated_at      DateTime?   @updatedAt
+  created_at      DateTime?   @default(now())
+  categoriesId    String?
+
+  @@map("todo")
+}
+
+model Categories {
+  id              String    @id @unique @default(cuid())
+  categories      String?   @unique
+  categories_todo Todo[]
+  updated_at      DateTime? @updatedAt
+  created_at      DateTime? @default(now())
+
+  @@map("categories")
+}
