@@ -1,8 +1,10 @@
 import { Elysia, t } from "elysia";
 import { swagger } from "@elysiajs/swagger";
+import { todo } from "./todo/controller/todo.controller";
 
 const app = new Elysia()
   .use(swagger())
+  .use(todo)
   .guard({
     response: t.String(),
   })
