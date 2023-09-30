@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { NotFoundError } from "elysia";
+import { NotFoundError, InternalServerError } from "elysia";
 
 const prisma = new PrismaClient();
 
@@ -23,22 +23,62 @@ export const getSingleTodo = async (id: string) => {
   return data;
 };
 
-export const addTodo = async (title: string, categories: any) => {
-  const data = await prisma.todo.create({
-    data: {
-      todo_title: title,
-      todo_categories: {
-        connectOrCreate: {
-          create: {
-            categories: categories,
+export const addTodo = async (title: string, categories: string) => {
+  try {
+    const data = await prisma.todo.create({
+      data: {
+        todo_title: title,
+        todo_categories: {
+          connectOrCreate: {
+            create: {
+              categories: categories,
+            },
+            where: {
+              categories: categories,
+            },
           },
-          where: {
+        },
+      },
+    });
+
+    return data;
+  } catch (error) {
+    throw new InternalServerError();
+  }
+};
+
+export const editTodo = async (id: string, title?: string, categories?: string) => {
+  try {
+    const existingCategory = await prisma.categories.findUnique({
+      where: {
+        categories: categories,
+      },
+    });
+
+    console.log(existingCategory);
+
+    if (!existingCategory) {
+      throw new NotFoundError("Categories Tidak Ditemukan");
+    }
+
+    // Lakukan operasi update
+    const data = await prisma.todo.update({
+      where: {
+        id: id,
+      },
+      data: {
+        todo_title: title,
+        todo_categories: {
+          connect: {
             categories: categories,
           },
         },
       },
-    },
-  });
+    });
 
-  return data;
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw new InternalServerError();
+  }
 };
