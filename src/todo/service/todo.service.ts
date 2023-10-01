@@ -23,7 +23,10 @@ export const getTodo = async (categories: string) => {
     },
   });
 
-  return data;
+  return {
+    message: "Success Get Todo",
+    data,
+  };
 };
 
 export const getSingleTodo = async (id: string) => {
@@ -37,7 +40,10 @@ export const getSingleTodo = async (id: string) => {
     throw new NotFoundError();
   }
 
-  return data;
+  return {
+    message: "Success Get Single Todo",
+    data,
+  };
 };
 
 export const addTodo = async (title: string, categories: string) => {
@@ -58,7 +64,10 @@ export const addTodo = async (title: string, categories: string) => {
       },
     });
 
-    return data;
+    return {
+      message: "Success Add Todo",
+      data,
+    };
   } catch (error) {
     throw new InternalServerError();
   }
@@ -78,7 +87,6 @@ export const editTodo = async (id: string, title?: string, categories?: string) 
       throw new NotFoundError("Categories Tidak Ditemukan");
     }
 
-    // Lakukan operasi update
     const data = await prisma.todo.update({
       where: {
         id: id,
@@ -93,9 +101,29 @@ export const editTodo = async (id: string, title?: string, categories?: string) 
       },
     });
 
-    return data;
+    return {
+      message: "Success Edit Todo",
+      data,
+    };
   } catch (error) {
     console.log(error);
     throw new InternalServerError();
   }
+};
+
+export const deleteTodo = async (id: string) => {
+  const data = await prisma.todo.delete({
+    where: {
+      id: id,
+    },
+  });
+
+  if (!data) {
+    throw new NotFoundError();
+  }
+
+  return {
+    message: "Success Delete Todo",
+    data,
+  };
 };
