@@ -1,15 +1,26 @@
 import { Elysia, t } from "elysia";
 import { swagger } from "@elysiajs/swagger";
-import { todo } from "./todo/controller/todo.controller";
+import { todoController } from "./todo/controller/todo.controller";
+import { categoriesController } from "./categories/controller/categories.controller";
 
 const app = new Elysia()
-  .use(swagger())
-  .use(todo)
+  .use(
+    swagger({
+      autoDarkMode: false,
+    })
+  )
+  .use(todoController)
+  .use(categoriesController)
   .guard({
     response: t.String(),
   })
   .get("/", () => "1")
-  .get("/ping", () => "pong")
+  // .get("/example", ({ query }) => {
+  //   const { name, age } = query;
+  //   return `Hello ${name}! You are ${age} years old.`;
+  // })
+
+  .get("/ping", () => `pong!\n${new Date().toLocaleTimeString()}`)
   .get("/id/:id", ({ params: { id } }) => `napain ${id}`)
   .listen(3000);
 
