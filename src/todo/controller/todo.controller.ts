@@ -1,5 +1,5 @@
 import Elysia, { t } from "elysia";
-import { getTodo, getSingleTodo, addTodo, editTodo } from "../service/todo.service";
+import { getTodo, getSingleTodo, addTodo, editTodo,deleteTodo } from "../service/todo.service";
 
 export const todo = new Elysia().group("/todo", (app) =>
   app
@@ -29,4 +29,7 @@ export const todo = new Elysia().group("/todo", (app) =>
         }),
       }
     )
+    .delete("/:id", ({ params: { id } }) => {
+      return deleteTodo(id)
+    })
 );
