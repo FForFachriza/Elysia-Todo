@@ -1,5 +1,5 @@
 import Elysia, { t } from "elysia";
-import { getTodo, getSingleTodo, addTodo, editTodo,deleteTodo } from "../service/todo.service";
+import { getTodo, getSingleTodo, addTodo, editTodo, deleteTodo } from "../service/todo.service";
 
 export const todo = new Elysia().group("/todo", (app) =>
   app
@@ -10,8 +10,12 @@ export const todo = new Elysia().group("/todo", (app) =>
         }),
       }),
     })
-    .get("/:id", ({ params: { id } }) => {
-      return getSingleTodo(id);
+    .get("/:id", ({ params: { id }, query: { categories } }) => getSingleTodo(id, categories), {
+      query: t.Object({
+        categories: t.String({
+          default: false,
+        }),
+      }),
     })
     .post("/", ({ body: { todo_title, todo_categories } }) => addTodo(todo_title, todo_categories), {
       body: t.Object({
@@ -30,6 +34,6 @@ export const todo = new Elysia().group("/todo", (app) =>
       }
     )
     .delete("/:id", ({ params: { id } }) => {
-      return deleteTodo(id)
+      return deleteTodo(id);
     })
 );
