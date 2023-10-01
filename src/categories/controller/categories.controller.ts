@@ -1,5 +1,5 @@
 import Elysia, { t } from "elysia";
-import { addCategories, getCategories, getSingleCategories } from "../service/categories.service";
+import { addCategories, editCategories, getCategories, getSingleCategories } from "../service/categories.service";
 
 export const categoriesController = (app: Elysia) =>
   app.group("/categories", (app) =>
@@ -18,7 +18,14 @@ export const categoriesController = (app: Elysia) =>
           }),
         }),
       })
-      .post("/", ({ body: {categories_title} }) => addCategories(categories_title), {
+      .post("/", ({ body: { categories_title } }) => addCategories(categories_title), {
+        body: t.Object({
+          categories_title: t.String({
+            minLength: 3,
+          }),
+        }),
+      })
+      .patch("/:id", ({ params: { id }, body: { categories_title } }) => editCategories(categories_title, id), {
         body: t.Object({
           categories_title: t.String({
             minLength: 3,

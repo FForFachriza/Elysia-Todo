@@ -69,3 +69,27 @@ export const addCategories = async (categories: string) => {
     data,
   };
 };
+
+export const editCategories = async (categories: string, id: string) => {
+  const isCategories = await prisma.categories.findUnique({
+    where: { id: id },
+  });
+
+  if (!isCategories) {
+    throw new NotFoundError();
+  }
+
+  const data = await prisma.categories.update({
+    where: {
+      id: id,
+    },
+    data: {
+      categories: categories,
+    },
+  });
+
+  return {
+    message: "Succes Edit Categories",
+    data,
+  };
+};
