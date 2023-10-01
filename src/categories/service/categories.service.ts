@@ -89,7 +89,20 @@ export const editCategories = async (categories: string, id: string) => {
   });
 
   return {
-    message: "Succes Edit Categories",
+    message: "Success Edit Categories",
+    data,
+  };
+};
+
+export const deleteCategories = async (id: string) => {
+  const data = await prisma.categories.delete({
+    where: {
+      id: id,
+    },
+  });
+
+  return {
+    message: "Success Delete Categories",
     data,
   };
 };

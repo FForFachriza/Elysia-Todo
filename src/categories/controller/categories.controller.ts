@@ -1,5 +1,11 @@
 import Elysia, { t } from "elysia";
-import { addCategories, editCategories, getCategories, getSingleCategories } from "../service/categories.service";
+import {
+  addCategories,
+  deleteCategories,
+  editCategories,
+  getCategories,
+  getSingleCategories,
+} from "../service/categories.service";
 
 export const categoriesController = (app: Elysia) =>
   app.group("/categories", (app) =>
@@ -32,4 +38,5 @@ export const categoriesController = (app: Elysia) =>
           }),
         }),
       })
+      .delete("/:id", ({ params: { id } }) => deleteCategories(id))
   );
