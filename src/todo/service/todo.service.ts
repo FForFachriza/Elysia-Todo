@@ -3,7 +3,7 @@ import { NotFoundError, InternalServerError } from "elysia";
 
 const prisma = new PrismaClient();
 
-export const getTodo = async (categories: string) => {
+const categoriesHandler = (categories: string): boolean => {
   let showCategories = false;
 
   switch (categories) {
@@ -17,6 +17,12 @@ export const getTodo = async (categories: string) => {
       break;
   }
 
+  return showCategories;
+};
+
+export const getTodo = async (categories: string) => {
+  const showCategories = categoriesHandler(categories);
+
   const data = await prisma.todo.findMany({
     include: {
       todo_categories: showCategories,
@@ -29,10 +35,15 @@ export const getTodo = async (categories: string) => {
   };
 };
 
-export const getSingleTodo = async (id: string) => {
+export const getSingleTodo = async (id: string, categories: string) => {
+  const showCategories = categoriesHandler(categories);
+
   const data = await prisma.todo.findUnique({
     where: {
       id: id,
+    },
+    include: {
+      todo_categories: showCategories,
     },
   });
 
